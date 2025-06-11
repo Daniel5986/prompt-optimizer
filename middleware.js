@@ -57,7 +57,7 @@ export default function middleware(request) {
   });
 }
 
-function generateAuthPage(isChinese = true) {
+function generateAuthPage(isChinese = false) {
   // 语言文本对象
   const text = {
     title: isChinese ? '访问验证 - Prompt Optimizer' : 'Access Verification - Prompt Optimizer',

@@ -7,8 +7,15 @@ export interface TemplateMetadata {
   version: string;          // 提示词版本
   lastModified: number;     // 最后修改时间
   author?: string;          // 作者（可选）
-  description?: string;     // 描述（可选）
+  description?: LocalizedString;     // 描述（可选）
   templateType: 'optimize' | 'iterate'; // 新增类型标识
+}
+
+// 语言
+export interface LocalizedString {
+    'zh-CN'?: string;
+    'en-US'?: string;
+    // 可扩展更多语言
 }
 
 /**
@@ -16,7 +23,7 @@ export interface TemplateMetadata {
  */
 export interface Template {
   id: string;              // 提示词唯一标识
-  name: string;            // 提示词名称
+  name: LocalizedString;            // 提示词名称
   content: string;         // 提示词内容
   metadata: TemplateMetadata;
   isBuiltin?: boolean;     // 是否为内置提示词

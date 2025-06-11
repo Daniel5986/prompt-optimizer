@@ -230,7 +230,7 @@ export class DataManager {
             const timestamp = Date.now();
             const random = Math.random().toString(36).substr(2, 6);
             finalTemplateId = `user-${template.id}-${timestamp}-${random}`;
-            finalTemplateName = `${template.name} (导入副本)`;
+            // finalTemplateName = `${template.name} (导入副本)`;
             console.warn(`检测到与内置模板ID冲突: ${template.id}，已重命名为: ${finalTemplateId}`);
           }
           

@@ -6,7 +6,10 @@ import { Template } from './types';
 export const DEFAULT_TEMPLATES: Record<string, Template> = {
   'general-optimize': {
     id: 'general-optimize',
-    name: '通用优化',
+    name: {
+        'zh-CN': '通用优化',
+        'en-US': 'General Optimization',
+    },
     content: `你是一个专业的AI提示词优化专家。请帮我优化以下prompt，并按照以下格式返回：
 
 # Role: [角色名称]
@@ -72,14 +75,21 @@ export const DEFAULT_TEMPLATES: Record<string, Template> = {
       version: '1.3.0',
       lastModified: Date.now(),
       author: 'System',
-      description: '通用优化提示词，适用于大多数场景',
+      description:{
+        'zh-CN': '通用优化提示词，适用于大多数场景',
+        'en-US': 'General optimization prompt words, applicable to most scenarios',
+      },
       templateType: 'optimize'
     },
     isBuiltin: true
   },
   'output-format-optimize': {
     id: 'output-format-optimize',
-    name: '通用优化-带输出格式要求',
+    name: {
+        'zh-CN': '通用优化-带输出格式要求',
+        'en-US': 'General optimization - With output format requirements',
+    },
+    
     content: `你是一个专业的AI提示词优化专家。请帮我优化以下prompt，并按照以下格式返回：
 
 # Role: [角色名称]
@@ -177,14 +187,20 @@ export const DEFAULT_TEMPLATES: Record<string, Template> = {
       version: '1.3.0',
       lastModified: Date.now(),
       author: 'System',
-      description: '适用于带格式要求的大多数场景',
+      description: {
+        'zh-CN': '适用于带格式要求的大多数场景',
+        'en-US': 'It is applicable to most scenarios with format requirements',
+      },
       templateType: 'optimize'
     },
     isBuiltin: true
   },
   'advanced-optimize': {
     id: 'advanced-optimize',
-    name: '带建议的优化',
+    name: {
+      'zh-CN': '带建议的优化',
+      'en-US': 'Optimization with suggestions',
+    },
     content: `# Role:Prompt工程师
 
 ## Attention：
@@ -295,7 +311,10 @@ export const DEFAULT_TEMPLATES: Record<string, Template> = {
       version: '2.1.0',
       lastModified: Date.now(),
       author: 'System',
-      description: '带建议的优化提示词，依赖高智能的优化模型',
+      description: {
+        'zh-CN': '带建议的优化提示词，依赖高智能的优化模型',
+        'en-US': 'Optimization prompt words with suggestions, relying on highly intelligent optimization models',
+      },
       templateType: 'optimize'
     },
     isBuiltin: true
@@ -303,7 +322,10 @@ export const DEFAULT_TEMPLATES: Record<string, Template> = {
   },
   'iterate': {
     id: 'iterate',
-    name: '通用迭代',
+    name: {
+        'zh-CN': '通用迭代',
+        'en-US': 'General iteration',
+    },
     content: `# Role：提示词迭代优化专家
 
 ## Background：
@@ -356,14 +378,20 @@ export const DEFAULT_TEMPLATES: Record<string, Template> = {
       version: '1.0.0',
       lastModified: Date.now(),
       author: 'System',
-      description: '定向优化的通用提示词',
+      description: {
+        'zh-CN': '定向优化的通用提示词',
+        'en-US': 'General prompt words for targeted optimization',
+      },
       templateType: 'iterate'
     },
     isBuiltin: true
   },
   'structured-format': {
     id: 'structured-format',
-    name: '指令型优化',
+    name: {
+        'zh-CN': '指令型优化',
+        'en-US': 'Directive optimization',
+    },
     content: `# Role: 结构化提示词转换专家
 
 ## Profile:
@@ -455,7 +483,10 @@ export const DEFAULT_TEMPLATES: Record<string, Template> = {
       version: '1.0.3',
       lastModified: Date.now(),
       author: 'System',
-      description: '适用于指令型提示词的优化，优化的同时遵循原指令',
+      description: {
+        'zh-CN': '适用于指令型提示词的优化，优化的同时遵循原指令',
+        'en-US': 'It is applicable to the optimization of directive prompt words, and the optimization follows the original instructions at the same time',
+      },
       templateType: 'optimize'
     },
     isBuiltin: true

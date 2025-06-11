@@ -7,7 +7,7 @@
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-2 min-w-0">
           <span v-if="modelValue" class="theme-text truncate">
-            {{ modelValue.name }}
+            {{ getLocalizedValue(modelValue.name) }}
           </span>
           <span v-else class="theme-placeholder">
             {{ t('template.select') }}
@@ -39,15 +39,15 @@
              ]"
         >
           <div class="flex items-center justify-between">
-            <span>{{ template.name }}</span>
+            <span>{{ getLocalizedValue(template.name) }}</span>
             <span v-if="template.isBuiltin" 
                   class="text-xs px-1.5 py-0.5 rounded theme-dropdown-item-tag">
               {{ t('common.builtin') }}
             </span>
           </div>
           <p class="text-xs theme-dropdown-item-description mt-1"
-             :title="template.metadata.description || t('template.noDescription')">
-            {{ template.metadata.description || t('template.noDescription') }}
+             :title="getLocalizedValue(template.metadata.description) || t('template.noDescription')">
+            {{ getLocalizedValue(template.metadata.description) || t('template.noDescription') }}
           </p>
         </div>
       </div>
@@ -67,10 +67,13 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { templateManager } from '@prompt-optimizer/core'
+import { templateManager, type LocalizedString } from '@prompt-optimizer/core'
 import { clickOutside } from '../directives/clickOutside'
+import { useLocalizedValue } from '../composables/useLocalizedValue'
 
-const { t } = useI18n()
+const { getLocalizedValue } = useLocalizedValue();
+
+const { t } = useI18n();
 
 interface Template {
   id: string;

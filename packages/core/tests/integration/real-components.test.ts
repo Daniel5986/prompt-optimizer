@@ -102,7 +102,10 @@ describe('Real Components Integration Tests', () => {
     it('应该能正确处理用户模板管理', async () => {
       const template = {
         id: 'user-test-template',
-        name: 'User Test Template',
+        name: {
+            'zh-CN': '用户测试模板',
+            'en-US': 'User Test Template'
+        },
         content: 'This is a user test template: {{input}}',
         metadata: {
           version: '1.0',
@@ -157,7 +160,10 @@ describe('Real Components Integration Tests', () => {
       // 2. 添加用户模板（避免与内置模板冲突）
       const template = {
         id: 'user-optimize-template',
-        name: 'User Optimize Template',
+        name: {
+            'zh-CN': '用户优化模板',
+            'en-US': 'User Optimize Template',
+        },
         content: 'Please optimize this prompt: {{input}}',
         metadata: {
           version: '1.0',
@@ -196,7 +202,10 @@ describe('Real Components Integration Tests', () => {
       
       const template = {
         id: 'user-export-template',
-        name: 'User Export Template',
+        name: {
+            'zh-CN': '用户导出模板',
+            'en-US': 'User Export Template',
+        },
         content: 'Export test content',
         metadata: {
           version: '1.0',
