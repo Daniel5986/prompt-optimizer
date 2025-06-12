@@ -13,92 +13,87 @@ TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
 NEW_RELEASE_DIR="$RELEASE_DIR/$TIMESTAMP"
 WEB_DIR="$NEW_RELEASE_DIR/packages/web"
 WEB_DIST="$WEB_DIR/dist"
-
-echo "📦 [部署开始] 项目: $APP_NAME"
-echo "📁 新版本目录: $NEW_RELEASE_DIR"
+LOG_FILE="$BASE_DIR/deploy.log"
 
 # ----------------------
-# 1. 创建新版本目录
+# 开始部署
 # ----------------------
+echo "📦 [部署开始] 项目: $APP_NAME" | tee -a "$LOG_FILE"
+echo "📁 新版本目录: $NEW_RELEASE_DIR" | tee -a "$LOG_FILE"
+
 mkdir -p "$NEW_RELEASE_DIR"
 
-# ----------------------
-# 2. 拷贝源码
-# ----------------------
-echo "📂 正在复制源码到 $NEW_RELEASE_DIR"
+echo "📂 正在复制源码..." | tee -a "$LOG_FILE"
 cp -r ./ "$NEW_RELEASE_DIR"
 
-# ----------------------
-# 3. 安装依赖
-# ----------------------
 cd "$NEW_RELEASE_DIR"
-echo "📦 安装依赖（使用 pnpm workspace）..."
-pnpm install --frozen-lockfile
+echo "📦 安装依赖..." | tee -a "$LOG_FILE"
+pnpm install --frozen-lockfile | tee -a "$LOG_FILE"
 
 # ----------------------
-# 4. 拷贝环境变量
+# 环境变量处理
 # ----------------------
-if [ -f "$BASE_DIR/.env.production.local" ]; then
-  cp "$BASE_DIR/.env.production.local" "$WEB_DIR/.env.production.local"
-  echo "✅ 已复制 .env.production.local 到 packages/web/"
+ENV_FILE_SRC="$BASE_DIR/.env.production.local"
+ENV_FILE_DEST="$WEB_DIR/.env.production.local"
+if [ -f "$ENV_FILE_SRC" ]; then
+  cp "$ENV_FILE_SRC" "$ENV_FILE_DEST"
+  echo "✅ 已复制 .env.production.local 到构建目录" | tee -a "$LOG_FILE"
 else
-  echo "⚠️ 未找到 $BASE_DIR/.env.production.local，构建可能缺失关键变量"
+  echo "⚠️ 警告：未找到 .env.production.local，变量可能未生效" | tee -a "$LOG_FILE"
 fi
 
 # ----------------------
-# 5. 构建项目
+# 构建
 # ----------------------
-echo "🛠️ 开始构建 packages/web..."
 cd "$WEB_DIR"
-pnpm build
+echo "🛠️ 开始构建..." | tee -a "$LOG_FILE"
+pnpm build | tee -a "$LOG_FILE"
 
-# ----------------------
-# 6. 检查构建结果
-# ----------------------
 if [ ! -f "$WEB_DIST/index.html" ]; then
-  echo "❌ 构建失败：未找到 dist/index.html"
+  echo "❌ 构建失败，未生成 dist/index.html" | tee -a "$LOG_FILE"
   exit 1
 fi
 
 # ----------------------
-# 7. 验证关键变量注入
+# 检查关键变量注入
 # ----------------------
-echo "🔍 检查是否注入 API Key..."
+echo "🔍 检查是否注入 API Key..." | tee -a "$LOG_FILE"
 if grep -q 'sk-' "$WEB_DIST/assets/"*.js; then
-  echo "✅ API Key 已写入构建产物 (dist/assets/*.js)"
+  echo "✅ API Key 已写入构建产物" | tee -a "$LOG_FILE"
 else
-  echo "⚠️ 未检测到 API Key，请确认 .env 文件注入是否成功"
+  echo "⚠️ 未检测到 API Key，请确认变量配置和使用" | tee -a "$LOG_FILE"
 fi
 
 # ----------------------
-# 8. 更新 current 软链
+# 切换软链
 # ----------------------
-echo "🔗 更新 current -> $WEB_DIST"
+echo "🔗 更新软链 current -> $WEB_DIST" | tee -a "$LOG_FILE"
 ln -sfn "$WEB_DIST" "$CURRENT_LINK"
 
 # ----------------------
-# 9. 启动或重启 PM2 服务
+# PM2 启动 serve
 # ----------------------
-echo "🚀 使用 serve + pm2 启动服务（端口 3000）"
+echo "🚀 使用 serve + pm2 启动服务（端口 3000）" | tee -a "$LOG_FILE"
 
-# 检查 serve 是否存在
 if ! command -v serve &> /dev/null; then
-  echo "❌ serve 未安装。请运行：pnpm add -g serve"
+  echo "❌ 错误：serve 未安装，请先执行 pnpm add -g serve" | tee -a "$LOG_FILE"
   exit 1
 fi
 
-# 删除旧进程（如果存在）
 pm2 delete "$APP_NAME" || true
 
-# ✅ 启动新进程（使用 bash -c 方式以避免 serve 被拆解）
-pm2 start --name "$APP_NAME" -- bash -c "serve -s $CURRENT_LINK -l 3000"
+pm2 start --name "$APP_NAME" -- bash -c "serve -s $CURRENT_LINK -l 3000" | tee -a "$LOG_FILE"
 
 # ----------------------
-# 10. 清理旧版本（保留最近 3 个）
+# 清理旧版本
 # ----------------------
 cd "$RELEASE_DIR"
 KEEP=3
-echo "🧹 清理旧版本（保留最近 $KEEP 个）"
+echo "🧹 清理旧版本（仅保留最近 $KEEP 个）" | tee -a "$LOG_FILE"
 ls -dt */ | tail -n +$((KEEP + 1)) | xargs rm -rf || true
 
-echo "✅ 部署完成！服务地址：http://localhost:3000"
+# ----------------------
+# 完成提示
+# ----------------------
+echo "✅ 部署完成！访问地址：http://localhost:3000" | tee -a "$LOG_FILE"
+echo "📄 日志位置：$LOG_FILE"
