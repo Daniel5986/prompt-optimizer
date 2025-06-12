@@ -77,7 +77,7 @@ ln -sfn "$WEB_DIST" "$CURRENT_LINK"
 # ----------------------
 echo "🚀 使用 serve + pm2 启动服务（端口 3000）"
 pm2 delete "$APP_NAME" || true
-pm2 start "$(pnpm bin)/serve -s $CURRENT_LINK -l 3000" --name "$APP_NAME"
+pm2 start "serve -s $CURRENT_LINK -l 3000" --name "$APP_NAME"
 
 # ----------------------
 # 10. 清理旧版本（保留最近 3 个）
