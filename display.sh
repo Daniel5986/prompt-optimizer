@@ -82,15 +82,14 @@ grep -q 'sk-' "$WEB_DIST/assets/"*.js && \
 # ----------------------
 log "🔗 更新软链 current -> $WEB_DIST"
 ln -sfn "$WEB_DIST" "$CURRENT_LINK"
-
 # ----------------------
-# 9. 重启 PM2 服务
+# 9. 启动或重启 PM2 服务
 # ----------------------
-log "🚀 使用 serve + pm2 启动服务（端口 $PORT）"
-pm2 delete "$APP_NAME" >/dev/null 2>&1 || log "ℹ️ 无需删除旧进程（未找到）"
+echo "🚀 使用 serve + pm2 启动服务（端口 $PORT）"
 
-pm2 start --name "$APP_NAME" -- bash -c "serve -s $CURRENT_LINK -l $PORT"
-log "✅ PM2 启动完成（http://localhost:$PORT）"
+pm2 delete "$APP_NAME" || echo "ℹ️ 无需删除旧进程（未找到）"
+
+pm2 start "bash -c 'serve -s $CURRENT_LINK -l $PORT'" --name "$APP_NAME"
 
 # ----------------------
 # 10. 清理旧版本
