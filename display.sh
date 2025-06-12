@@ -64,7 +64,11 @@ fi
 # 7. 验证关键变量注入
 # ----------------------
 echo "🔍 检查是否注入 API Key..."
-grep -q 'sk-' "$WEB_DIST/assets/"*.js && echo "✅ API Key 已写入构建产物" || echo "⚠️ 未检测到 API Key，请确认 .env 文件注入是否成功"
+if grep -q 'sk-' "$WEB_DIST/assets/"*.js; then
+  echo "✅ API Key 已写入构建产物 (dist/assets/*.js)"
+else
+  echo "⚠️ 未检测到 API Key，请确认 .env 文件注入是否成功"
+fi
 
 # ----------------------
 # 8. 更新 current 软链
@@ -76,8 +80,18 @@ ln -sfn "$WEB_DIST" "$CURRENT_LINK"
 # 9. 启动或重启 PM2 服务
 # ----------------------
 echo "🚀 使用 serve + pm2 启动服务（端口 3000）"
+
+# 检查 serve 是否存在
+if ! command -v serve &> /dev/null; then
+  echo "❌ serve 未安装。请运行：pnpm add -g serve"
+  exit 1
+fi
+
+# 删除旧进程（如果存在）
 pm2 delete "$APP_NAME" || true
-pm2 start "serve -s $CURRENT_LINK -l 3000" --name "$APP_NAME"
+
+# ✅ 启动新进程（使用 bash -c 方式以避免 serve 被拆解）
+pm2 start --name "$APP_NAME" -- bash -c "serve -s $CURRENT_LINK -l 3000"
 
 # ----------------------
 # 10. 清理旧版本（保留最近 3 个）
