@@ -13,7 +13,7 @@
           <h2 class="text-xl font-semibold theme-manager-text">{{ t('templateManager.title') }}</h2>
           <div class="flex items-center space-x-4">
             <span v-if="selectedTemplate" class="text-sm theme-manager-text-secondary">
-              {{ t('common.currentTemplate') }}: {{ selectedTemplate.name }}
+              {{ t('common.currentTemplate') }}: {{ getLocalizedValue(selectedTemplate.name) }}
             </span>
             <button
               @click="$emit('close')"
@@ -297,6 +297,9 @@ import { ref, onMounted, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { templateManager } from '@prompt-optimizer/core'
 import { useToast } from '../composables/useToast'
+import { useLocalizedValue } from '../composables/useLocalizedValue'
+
+const { getLocalizedValue } = useLocalizedValue();
 
 const { t } = useI18n()
 

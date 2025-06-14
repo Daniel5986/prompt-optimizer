@@ -200,7 +200,7 @@ defineExpose({
 
 const selectTemplate = (template: Template) => {
   emit('update:modelValue', template)
-  emit('select', template, props.type)
+//   emit('select', template, props.type)
   isOpen.value = false
   // 选择后刷新列表
   refreshTemplates()
